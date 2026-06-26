@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simdom | Top Video Edits</title>
+    <style>
+        /* Base Dark Theme Styling */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000; /* Строго чорний фон */
+            margin: 0;
+            padding: 0;
+            display: block;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Анімована фіолетова пара на фоні */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 50% 30%, rgba(138, 43, 226, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -2;
+            pointer-events: none;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.15); opacity: 1; }
+        }
+
+        /* Полотно для магічних частинок */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none; /* Щоб не заважало клікати по відео та кнопках */
+        }
+
+        /* Header section */
+        header {
+            text-align: center;
+            padding: 60px 20px 20px 20px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin: 0;
+            font-weight: 900;
+            background: linear-gradient(45deg, #a855f7, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            color: #a855f7;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Portfolio Grid with 9:16 aspect ratio */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 35px;
+            margin-top: 40px;
+        }
+
+        .video-card {
+            background-color: rgba(11, 12, 16, 0.9);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #2e1065; 
+            backdrop-filter: blur(3px);
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+            border-color: #a855f7;
+        }
+
+        /* 9:16 Video Container for TikTok embeds */
+        .video-container {
+            position: relative;
+            padding-bottom: 177.77%; 
+            height: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(11, 12, 16, 0.95);
+        }
+
+        .price-tag {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #a855f7;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Extras Section */
+        .extras-section {
+            background: linear-gradient(135deg, rgba(11, 12, 16, 0.9) 0%, rgba(0, 0, 0, 0.9) 100%);
+            border: 1px dashed #a855f7;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 60px auto 40px auto;
+            max-width: 700px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
+            backdrop-filter: blur(3px);
+        }
+
+        .extras-title {
+            font-size: 1.4rem;
+            color: #a855f7;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+        }
+
+        .extra-item {
+            margin: 15px 0;
+            font-size: 1.1rem;
+        }
+
+        .extra-price {
+            color: #a855f7;
+            font-weight: 700;
+        }
+
+        /* Disclaimer Text */
+        .disclaimer {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Call to Action Button */
+        .cta-section {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .btn-contact {
+            display: inline-block;
+            background: linear-gradient(45deg, #a855f7, #6366f1);
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 800;
+            padding: 18px 50px;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(168, 85, 247, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-contact:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+    <canvas id="particle-canvas"></canvas>
+
+    <header>
+        <h1>SIMDOM</h1>
+        <div class="subtitle">I MAKE TOP EDITS</div>
+    </header>
+
+    <div class="container">
+        
+        <div class="portfolio-grid">
+            
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7650514301144370439" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$2</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7650887412826033426" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$2</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7651170788267134226" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$3</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7652369777771482375" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$3</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7654286926861683986" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$2</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7655332574398827794" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$3</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7655617733954014482" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$3</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7654545228824644882" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$5</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-container">
+                    <iframe src="https://www.tiktok.com/embed/v2/7651919260591082759" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <p class="price-tag">$3</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="extras-section">
+            <div class="extras-title">+ YOUR 3D WATERMARK</div>
+            <div class="extra-item">Custom 3D watermark added to your video: <span class="extra-price">+$0.5 per video</span></div>
+            <div class="extra-item" style="font-size: 0.95rem; color: #94a3b8; margin-bottom: 20px;">
+                (Can be styled differently upon request, customized just for you)
+            </div>
+            <div class="extra-item" style="border-top: 1px solid #2e1065; padding-top: 15px;">
+                Permanent file download & cloud storage access: <span class="extra-price">$3</span>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            I can create highly similar, high-quality edits customized for your project. Final prices may vary depending on your specific requirements, but will remain close to the rates listed above.
+        </div>
+
+        <div class="cta-section">
+            <a href="https://t.me/youtuber_simdom" class="btn-contact" target="_blank">ORDER EDIT 🚀</a>
+        </div>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let mouse = { x: null, y: null };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if(e.touches.length > 0) {
+                mouse.x = e.touches[0].clientX;
+                mouse.y = e.touches[0].clientY;
+            }
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Клас вибухових міні-частинок (уламків)
+        class Spark {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 1.5 + 0.5;
+                // Випадковий напрямок розлітання в радіусі 360 градусів
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 2 + 1;
+                this.speedX = Math.cos(angle) * speed;
+                this.speedY = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.03 + 0.015; // Швидкість згасання уламка
+                this.color = color;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Клас головних магічних частинок
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height; // Рандомний спавн при першому запуску сторінки
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -10; // Знову з'являються з верхньої "пари"
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 0.8 + 0.2;
+                this.alpha = Math.random() * 0.5 + 0.2;
+                this.color = Math.random() > 0.5 ? '#a855f7' : '#6366f1';
+            }
+
+            update() {
+                if (mouse.x !== null && mouse.y !== null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Якщо частинка долетіла ДУЖЕ близько до курсора (менше 10 пікселів)
+                    if (distance < 10) {
+                        // Створюємо ефект красивого розсипання (вибуху) на 5 уламків
+                        for (let i = 0; i < 5; i++) {
+                            sparksArray.push(new Spark(this.x, this.y, this.color));
+                        }
+                        // Миттєво видаляємо та перестворюємо частинку вгорі
+                        this.reset();
+                        return;
+                    }
+
+                    if (distance < 400) { // Радіус магнітного притягання до курсору
+                        this.x += (dx / distance) * 1.8;
+                        this.y += (dy / distance) * 1.8;
+                    } else {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                    }
+                } else {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                }
+
+                if (this.y > canvas.height || this.x < 0 || this.x > canvas.width) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const particleArray = [];
+        const sparksArray = [];
+        const numberOfParticles = 65; 
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            particleArray.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Рух та малювання головних частинок
+            for (let i = 0; i < particleArray.length; i++) {
+                particleArray[i].update();
+                particleArray[i].draw();
+            }
+
+            // Рух та малювання уламків від вибуху
+            for (let i = sparksArray.length - 1; i >= 0; i--) {
+                sparksArray[i].update();
+                sparksArray[i].draw();
+                // Якщо уламок повністю згас — прибираємо його з пам'яті комп'ютера
+                if (sparksArray[i].alpha <= 0) {
+                    sparksArray.splice(i, 1);
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
